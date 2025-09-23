@@ -1,0 +1,30 @@
+# KI Voice Assistant Requirements
+# Basis Pipecat Installation
+pipecat-ai[all]
+
+# Web Framework
+fastapi
+uvicorn[standard]
+
+# Environment Management
+python-dotenv
+
+# Logging
+loguru
+
+# Audio Processing
+aiofiles
+
+# Zusätzliche Dependencies für Services
+elevenlabs>=1.0.0
+deepgram-sdk>=3.0.0
+openai>=1.0.0
+twilio>=8.0.0
+
+# WebSocket Support
+websockets
+
+# Optional: Development Tools
+# black
+# pytest
+# pre-commit

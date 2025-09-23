@@ -1,0 +1,1 @@
+web: python voice_assistant_server.py

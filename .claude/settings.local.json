@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip install:*)",
+      "Bash(python:*)",
+      "Bash(copy .env.example .env)",
+      "Bash(ngrok:*)",
+      "Bash(taskkill:*)",
+      "Bash(curl:*)",
+      "Bash(Get-Process ngrok)",
+      "Bash(Stop-Process -Force)",
+      "Read(//c/Users/lbi/OneDrive - Stiftung Myclimate/Bilder/Screenshots/**)",
+      "Bash(git init:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

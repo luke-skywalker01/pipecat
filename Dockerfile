@@ -1,38 +1,25 @@
-# Railway Dockerfile für KI Voice Assistant
+# Railway Minimal Dockerfile
 FROM python:3.11-slim
 
 WORKDIR /app
 
-# System dependencies für pipecat-ai
+# Minimal system dependencies
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    libssl-dev \
-    ca-certificates \
-    libasound2-dev \
-    portaudio19-dev \
-    wget \
-    curl \
-    && apt-get clean \
+    gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first for better Docker layer caching
-COPY voice_assistant_requirements.txt .
+# Copy only essential files
+COPY requirements.txt .
+COPY voice_assistant_server_minimal.py voice_assistant_server.py
 
-# Install Python dependencies
-RUN pip install --no-cache-dir --upgrade pip
-RUN pip install --no-cache-dir -r voice_assistant_requirements.txt
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application files
-COPY voice_assistant_server.py .
-COPY voice_assistant_bot.py .
-
-# Set environment variables
+# Environment
 ENV PYTHONUNBUFFERED=1
 ENV HOST=0.0.0.0
 ENV PORT=8000
 
-# Expose port
 EXPOSE 8000
 
-# Start command
 CMD ["python", "voice_assistant_server.py"]

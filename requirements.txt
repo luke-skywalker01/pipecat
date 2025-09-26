@@ -1,4 +1,9 @@
-# Railway Minimal Deploy - Test Version
-fastapi==0.104.1
-uvicorn==0.24.0
-python-dotenv==1.0.0
+# Railway Official Pipecat Deploy
+
+# Core Pipecat with all extras
+pipecat-ai[silero,deepgram,openai,fastapi]
+
+# FastAPI for web server
+fastapi>=0.104.1
+uvicorn>=0.24.0
+python-dotenv>=1.0.0

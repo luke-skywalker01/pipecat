@@ -23,7 +23,7 @@ RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application files
-COPY bot.py bot.py
+COPY voice_assistant_official.py voice_assistant_official.py
 COPY .env.example .env
 
 # Environment variables

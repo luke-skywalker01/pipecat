@@ -2,7 +2,7 @@
 builder = "DOCKERFILE"
 
 [deploy]
-startCommand = "python bot.py"
+startCommand = "python -m pipecat.runner voice_assistant_official.py --transport twilio --log-level info --host 0.0.0.0 --port 8000"
 restartPolicyType = "ON_FAILURE"
 
 [environments.production.variables]

@@ -1,33 +1,28 @@
-# KI Voice Assistant Requirements
-# Basis Pipecat Installation
-pipecat-ai[all]
+# KI Voice Assistant Requirements - Railway Optimiert
 
-# Web Framework
-fastapi
-uvicorn[standard]
+# Core Framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
 
-# Environment Management
-python-dotenv
+# Environment & Logging
+python-dotenv==1.0.0
+loguru==0.7.3
 
-# Logging
-loguru
+# Core Pipecat (ohne [all] extra um Dependencies zu reduzieren)
+pipecat-ai==0.0.85
 
-# Audio Processing
-aiofiles
-
-# Zusätzliche Dependencies für Services
+# Essential AI Services
+openai>=1.0.0
 elevenlabs>=1.0.0
 deepgram-sdk>=3.0.0
-openai>=1.0.0
 twilio>=8.0.0
 
-# WebSocket Support
-websockets
+# Audio & WebSocket Support
+websockets==15.0.1
+aiofiles==24.1.0
+requests==2.32.4
 
-# HTTP Requests (für Health Check)
-requests
-
-# Optional: Development Tools
-# black
-# pytest
-# pre-commit
+# Core Dependencies für pipecat-ai
+numpy>=1.26.4
+aiohttp>=3.11.12
+protobuf>=5.29.3

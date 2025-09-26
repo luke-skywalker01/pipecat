@@ -3,13 +3,15 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# System dependencies
+# System dependencies für pipecat-ai
 RUN apt-get update && apt-get install -y \
     build-essential \
     libssl-dev \
     ca-certificates \
-    libasound2 \
+    libasound2-dev \
+    portaudio19-dev \
     wget \
+    curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -17,6 +19,7 @@ RUN apt-get update && apt-get install -y \
 COPY voice_assistant_requirements.txt .
 
 # Install Python dependencies
+RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir -r voice_assistant_requirements.txt
 
 # Copy application files
@@ -30,10 +33,6 @@ ENV PORT=8000
 
 # Expose port
 EXPOSE 8000
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:8000/health')" || exit 1
 
 # Start command
 CMD ["python", "voice_assistant_server.py"]

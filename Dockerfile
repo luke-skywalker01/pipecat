@@ -23,7 +23,7 @@ RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application files
-COPY voice_assistant_official.py bot.py
+COPY bot.py bot.py
 COPY .env.example .env
 
 # Environment variables
@@ -33,5 +33,5 @@ ENV PORT=8000
 
 EXPOSE 8000
 
-# Start the bot with Twilio transport
-CMD ["python", "-m", "pipecat.runner", "bot.py", "--transport", "twilio", "--log-level", "debug", "--host", "0.0.0.0", "--port", "8000"]
+# Start the FastAPI server directly
+CMD ["python", "bot.py"]

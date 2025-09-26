@@ -26,7 +26,8 @@
       "Bash(railway login:*)",
       "Bash(railway status:*)",
       "Bash(set RAILWAY_TOKEN=64f9439e-4099-48d1-8f8a-85383dfc1540)",
-      "Bash(railway link:*)"
+      "Bash(railway link:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []

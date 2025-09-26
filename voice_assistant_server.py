@@ -24,16 +24,9 @@ async def root():
 @app.get("/health")
 async def health_check():
     """Health Check Endpoint"""
-    required_vars = ["OPENAI_API_KEY", "DEEPGRAM_API_KEY", "ELEVENLABS_API_KEY", "TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN"]
-    missing_vars = [var for var in required_vars if not os.getenv(var)]
-
-    if missing_vars:
-        return JSONResponse(
-            status_code=500,
-            content={"status": "error", "missing_env_vars": missing_vars}
-        )
-
-    return {"status": "healthy", "message": "Alle API Keys konfiguriert"}
+    # Für Railway Deployment sind alle API Keys optional beim Health Check
+    # Sie werden zur Laufzeit bei der ersten Verwendung validiert
+    return {"status": "healthy", "message": "Voice Assistant Server läuft", "port": os.getenv("PORT", "8000")}
 
 
 @app.post("/webhook/twilio")

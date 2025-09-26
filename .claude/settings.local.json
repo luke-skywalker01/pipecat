@@ -11,7 +11,22 @@
       "Bash(Stop-Process -Force)",
       "Read(//c/Users/lbi/OneDrive - Stiftung Myclimate/Bilder/Screenshots/**)",
       "Bash(git init:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(tasklist)",
+      "Bash(findstr:*)",
+      "Bash(set SERVER_DOMAIN=memphis-unparked-pseudoevangelically.ngrok-free.dev)",
+      "Bash(timeout:*)",
+      "Bash(rd:*)",
+      "Bash(netstat:*)",
+      "Bash(pkill:*)",
+      "Bash(set PORT=8000)",
+      "Bash(railway --version)",
+      "Bash(npm install:*)",
+      "Bash(railway login:*)",
+      "Bash(railway status:*)",
+      "Bash(set RAILWAY_TOKEN=64f9439e-4099-48d1-8f8a-85383dfc1540)",
+      "Bash(railway link:*)"
     ],
     "deny": [],
     "ask": []

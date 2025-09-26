@@ -1,40 +1,39 @@
-# setup
-FROM python:3.11.5
+# Railway Dockerfile für KI Voice Assistant
+FROM python:3.11-slim
 
 WORKDIR /app
-COPY requirements.txt /app
-COPY *.py /app
-COPY pyproject.toml /app
 
-COPY src/ /app/src/
-COPY examples/ /app/examples/
+# System dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libssl-dev \
+    ca-certificates \
+    libasound2 \
+    wget \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
-RUN ls --recursive /app/
-RUN pip3 install --upgrade -r requirements.txt
-RUN python -m build .
-RUN pip3 install .
-RUN pip3 install gunicorn
-# If running on Ubuntu, Azure TTS requires some extra config
-# https://learn.microsoft.com/en-us/azure/ai-services/speech-service/quickstarts/setup-platform?pivots=programming-language-python&tabs=linux%2Cubuntu%2Cdotnetcli%2Cdotnet%2Cjre%2Cmaven%2Cnodejs%2Cmac%2Cpypi
+# Copy requirements first for better Docker layer caching
+COPY voice_assistant_requirements.txt .
 
-RUN wget -O - https://www.openssl.org/source/openssl-1.1.1w.tar.gz | tar zxf -
-WORKDIR openssl-1.1.1w
-RUN ./config --prefix=/usr/local
-RUN make -j $(nproc)
-RUN make install_sw install_ssldirs
-RUN ldconfig -v
-ENV SSL_CERT_DIR=/etc/ssl/certs
+# Install Python dependencies
+RUN pip install --no-cache-dir -r voice_assistant_requirements.txt
 
-#ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
-RUN apt clean
-RUN apt-get update
-RUN apt-get -y install build-essential libssl-dev ca-certificates libasound2 wget
+# Copy application files
+COPY voice_assistant_server.py .
+COPY voice_assistant_bot.py .
 
+# Set environment variables
 ENV PYTHONUNBUFFERED=1
+ENV HOST=0.0.0.0
+ENV PORT=8000
 
-WORKDIR /app
-
+# Expose port
 EXPOSE 8000
-# run
-CMD ["gunicorn", "--workers=2", "--log-level", "debug", "--chdir", "examples/server", "--capture-output", "daily-bot-manager:app", "--bind=0.0.0.0:8000"]
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD python -c "import requests; requests.get('http://localhost:8000/health')" || exit 1
+
+# Start command
+CMD ["python", "voice_assistant_server.py"]

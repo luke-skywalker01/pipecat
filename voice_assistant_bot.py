@@ -54,50 +54,66 @@ async def run_voice_assistant(websocket_client: WebSocket, stream_sid: str, call
         ),
     )
 
-    # OpenAI LLM Service (GPT-4o-mini)
+    # OpenAI LLM Service (GPT-3.5-turbo für minimale Latenz)
     llm = OpenAILLMService(
         api_key=os.getenv("OPENAI_API_KEY"),
-        model="gpt-4o-mini"
+        model="gpt-3.5-turbo"
     )
 
-    # Deepgram Speech-to-Text Service
+    # Deepgram Speech-to-Text Service (optimiert für Geschwindigkeit)
     stt = DeepgramSTTService(
         api_key=os.getenv("DEEPGRAM_API_KEY"),
-        model="nova-2",
+        model="nova-2-general",  # Schneller als nova-2
         language="de",  # Deutsch
-        audio_passthrough=True
+        audio_passthrough=True,
+        interim_results=True  # Für schnellere Zwischenergebnisse
     )
 
-    # ElevenLabs Text-to-Speech Service
+    # ElevenLabs Text-to-Speech Service (Turbo mit deutscher Stimme)
     tts = ElevenLabsTTSService(
         api_key=os.getenv("ELEVENLABS_API_KEY"),
-        voice_id="Rc6mVxOkevStnSH2pUO9",  # Ihre gewählte Stimme
-        model="eleven_multilingual_v2"
+        voice_id="EXAVITQu4vr4xnSDxMaL",  # Sarah - Weibliche englische Stimme
+        model="eleven_turbo_v2",  # Deutlich schneller als multilingual_v2
+        optimize_streaming_latency=4,  # Maximum Latenz-Optimierung
+        output_format="ulaw_8000"  # Optimiert für Twilio
     )
 
-    # System Prompt für Kundenservice
+    # System Prompt für Ellie - Telefonrezeptionistin
     messages = [
         {
             "role": "system",
-            "content": """Du bist ein professioneller KI-Kundenberater. Du hilfst Kunden bei ihren Anfragen höflich und kompetent.
+            "content": """Sie sind Ellie, die freundliche und kompetente Telefonrezeptionistin für Momentum Solutions, ein serviceorientierter Fach- und Handwerksbetrieb mit Sitz in Wien, Österreich.
 
-Wichtige Regeln:
-- Antworte immer auf Deutsch
-- Sei höflich und professionell
-- Halte deine Antworten kurz und präzise (max. 2-3 Sätze)
-- Verwende keine Sonderzeichen, da deine Antwort in Sprache umgewandelt wird
-- Bei komplexen Problemen biete an, einen menschlichen Mitarbeiter zu verbinden
-- Frage nach der Kundennummer, wenn nötig
-- Dokumentiere wichtige Informationen
+[Identity]
+- Sie sind Ellie, Telefonrezeptionistin bei Momentum Solutions
+- Handwerksbetrieb in Wien, Österreich
+- Geschäftszeiten: Montag-Freitag 8:00-17:00
 
-Du kannst bei folgenden Themen helfen:
-- Allgemeine Produktinformationen
-- Bestellstatus
-- Rechnungsfragen
-- Technischer Support Level 1
-- Terminvereinbarungen
+[Style]
+- Freundlicher, gesprächiger Ton mit österreichischer Herzlichkeit
+- Warm, zugänglich und leicht humorvoll
+- Kurze, natürliche Antworten (max. 2 Sätze)
+- Verwenden Sie "Na ja", "Äh", "Ich mein" für natürlichen Gesprächsstil
+- KEINE Sonderzeichen oder Emojis - nur natürliche Sprache
 
-Starte das Gespräch mit einer freundlichen Begrüßung.""",
+[Geschäftszeiten - ABSOLUTE REGELN]
+- Montag bis Freitag: 8:00-17:00 Uhr
+- Wochenenden: GESPERRT
+- Termine außerhalb 8:00-17:00: SOFORT ablehnen
+
+[Services]
+- Handwerkliche Dienstleistungen
+- Kostenlose Kostenvoranschläge
+- Notdienst: 24/7 bei echten Notfällen
+
+[Terminverhalten]
+- Bei Terminanfragen: Höflich erklären dass Sie aktuell nur Terminanfragen entgegennehmen können
+- Daten sammeln: Name, Telefon, gewünschte Zeit, Grund
+- Bestätigen dass jemand zurückrufen wird
+
+Starten Sie IMMER mit: "Hallo, hier ist Ellie von Momentum Solutions! Wie kann ich Ihnen heute helfen?"
+
+Halten Sie alle Antworten kurz und natürlich - Sie sprechen am Telefon!""",
         },
     ]
 
@@ -118,14 +134,17 @@ Starte das Gespräch mit einer freundlichen Begrüßung.""",
         ]
     )
 
-    # Pipeline Task Configuration
+    # Pipeline Task Configuration (optimiert für minimale Latenz)
     task = PipelineTask(
         pipeline,
         params=PipelineParams(
             audio_in_sample_rate=8000,   # Twilio Standard
             audio_out_sample_rate=8000,  # Twilio Standard
-            enable_metrics=True,
-            enable_usage_metrics=True,
+            enable_metrics=False,        # Deaktiviert für bessere Performance
+            enable_usage_metrics=False,  # Deaktiviert für bessere Performance
+            audio_out_buffer_size=1024,  # Kleinerer Buffer für weniger Latenz
+            vad_start_secs=0.1,         # Schnellere Voice Activity Detection
+            vad_stop_secs=0.3,          # Kürzere Pause-Erkennung
         ),
     )
 

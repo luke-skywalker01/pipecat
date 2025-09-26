@@ -5,7 +5,7 @@
 import os
 import uvicorn
 from dotenv import load_dotenv
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request
 from fastapi.responses import JSONResponse
 from loguru import logger
 from voice_assistant_bot import handle_twilio_call
@@ -37,14 +37,17 @@ async def health_check():
 
 
 @app.post("/webhook/twilio")
-async def twilio_webhook():
+async def twilio_webhook(request: Request):
     """
     Twilio Webhook für eingehende Anrufe
     Dieser Endpoint wird von Twilio aufgerufen, wenn ein Anruf eingeht
     """
+    logger.info("🔥 TWILIO WEBHOOK AUFGERUFEN!")
+    form_data = await request.form()
+    logger.info(f"Twilio Form Data: {dict(form_data)}")
     # TwiML Response für Twilio
     # Dynamische Domain für Produktion/Development
-    domain = os.getenv('RAILWAY_PUBLIC_DOMAIN') or os.getenv('SERVER_DOMAIN', 'localhost:8000')
+    domain = os.getenv("SERVER_DOMAIN", "localhost:8000")
 
     twiml_response = f"""<?xml version="1.0" encoding="UTF-8"?>
 <Response>
@@ -67,6 +70,8 @@ async def twilio_websocket(websocket: WebSocket):
     WebSocket Endpoint für Twilio Media Streams
     Hier wird die Echtzeit-Audiokommunikation abgewickelt
     """
+    logger.info(f"WebSocket connection attempt from: {websocket.client}")
+    logger.info(f"WebSocket headers: {websocket.headers}")
     await websocket.accept()
     logger.info("Twilio WebSocket Verbindung akzeptiert")
 
@@ -104,6 +109,6 @@ if __name__ == "__main__":
         "voice_assistant_server:app",
         host=host,
         port=port,
-        reload=True,
+        reload=False,  # DISABLED for stable production
         log_level="info"
     )

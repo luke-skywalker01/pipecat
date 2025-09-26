@@ -1,0 +1,61 @@
+# Railway Ignore File für Voice Assistant
+
+# Git files
+.git/
+.gitignore
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.tox
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.log
+
+# Environment files (diese werden über Railway Environment Variables gesetzt)
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Development files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Documentation
+README.md
+VOICE_ASSISTANT_README.md
+*.md
+
+# Examples and tests
+examples/
+tests/
+test_*.py
+*_test.py
+
+# Build files
+build/
+dist/
+*.egg-info/
+
+# Claude Code files
+.claude/
+
+# Nur diese Dateien sind für Railway Deployment notwendig:
+# - voice_assistant_server.py
+# - voice_assistant_bot.py
+# - voice_assistant_requirements.txt
+# - Dockerfile
+# - railway.toml
+# - Procfile

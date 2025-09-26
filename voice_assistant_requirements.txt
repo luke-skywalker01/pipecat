@@ -24,6 +24,9 @@ twilio>=8.0.0
 # WebSocket Support
 websockets
 
+# HTTP Requests (für Health Check)
+requests
+
 # Optional: Development Tools
 # black
 # pytest

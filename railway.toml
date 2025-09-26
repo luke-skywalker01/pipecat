@@ -1,12 +1,14 @@
 [build]
-builder = "NIXPACKS"
-buildCommand = "pip install -r voice_assistant_requirements.txt"
+builder = "DOCKERFILE"
 
 [deploy]
 startCommand = "python voice_assistant_server.py"
 healthcheckPath = "/health"
-healthcheckTimeout = 100
+healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
+watchPaths = ["voice_assistant_server.py", "voice_assistant_bot.py"]
 
-[environments.production]
-variables = { PORT = "8000" }
+[environments.production.variables]
+PORT = "8000"
+HOST = "0.0.0.0"
+PYTHONUNBUFFERED = "1"

@@ -2,7 +2,7 @@
 builder = "DOCKERFILE"
 
 [deploy]
-startCommand = "python voice_assistant_server.py"
+startCommand = "python bot.py"
 restartPolicyType = "ON_FAILURE"
 
 [environments.production.variables]
